@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Cart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      background-color: #f8f9fa;
+    }
+
+    .full-screen-container {
+      padding: 0;
+      margin: 0;
+    }
+
+    .qr-section {
+      display: none;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 576px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .btn {
+        font-size: 0.9rem;
+      }
+
+      table td, table th {
+        font-size: 14px;
+        padding: 0.4rem;
+      }
+
+      .qr-section img {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+  <div class="container-fluid full-screen-container">
+    <h1 class="mb-3 px-2 pt-3">🛒 Your Shopping Cart</h1>
+
+    {% if cart_items %}
+      <!-- Responsive Cart Table -->
+      <div class="table-responsive px-2">
+        <table class="table table-bordered table-striped">
+          <thead class="table-dark">
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart_items %}
+            <tr>
+              <td>{{ item.name }}</td>
+              <td>${{ item.price }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>${{ item.total }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Buttons + Total -->
+      <div class="row px-2 mt-3 align-items-center">
+        <!-- Left Buttons -->
+        <div class="col-md-6 d-flex gap-2 mb-3 mb-md-0">
+          <a href="{{ url_for('index') }}" class="btn btn-secondary">⬅ Back to Shop</a>
+          <a href="{{ url_for('clear_cart') }}" class="btn btn-danger">🗑️ Clear Cart</a>
+        </div>
+
+        <!-- Right Total -->
+        <div class="col-md-6 text-md-end">
+          <h4>Total: ${{ total }}</h4>
+        </div>
+      </div>
+
+      <!-- Confirm Button -->
+      <div class="mt-4 px-2">
+        <button class="btn btn-success btn-lg w-100" id="confirmBtn">✅ Confirm Order</button>
+      </div>
+
+      <!-- QR Payment Section -->
+      <div id="qrSection" class="qr-section text-center px-2">
+        <h5 class="mt-4">📱 Scan to Pay</h5>
+        <img id="qrImage" src="" alt="QR Code for Payment" class="img-fluid" style="max-width: 300px;">
+        <p class="mt-2 text-muted">Scan with your mobile banking app to complete the payment.</p>
+      </div>
+
+    {% else %}
+      <p class="text-muted px-2">Your cart is empty.</p>
+      <a href="{{ url_for('index') }}" class="btn btn-primary mt-3 px-2">⬅ Back to Shop</a>
+    {% endif %}
+  </div>
+
+  <script>
+    const confirmBtn = document.getElementById("confirmBtn");
+    const qrSection = document.getElementById("qrSection");
+    const qrImage = document.getElementById("qrImage");
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener("click", async () => {
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = "Processing...";
+
+        try {
+          const res = await fetch('/api/confirm_order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          const data = await res.json();
+
+          if (data.status === 'success') {
+            qrImage.src = data.qr_url;
+            qrSection.style.display = "block";
+            confirmBtn.style.display = "none";
+          } else {
+            alert(data.message || "Order failed.");
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = "✅ Confirm Order";
+          }
+        } catch (err) {
+          alert("Server error.");
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = "✅ Confirm Order";
+        }
+      });
+    }
+  </script>
+</body>
+</html>
