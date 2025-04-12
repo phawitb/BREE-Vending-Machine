@@ -77,10 +77,19 @@
 <body class="bg-light">
 
   <!-- ✅ Minimal Fixed Header -->
-  <div class="cart-title-fixed">
+  <!-- <div class="cart-title-fixed">
     <a href="{{ url_for('index') }}" class="btn-back">←</a>
     <div class="fs-5 fw-light">Your Shopping Cart</div>
+  </div> -->
+  <div class="cart-title-fixed d-flex align-items-center ps-3 gap-2">
+    <a href="{{ url_for('index') }}" class="d-flex align-items-center">
+      <img src="{{ url_for('static', filename='img/BackArrowIcon.png') }}" alt="Back" style="height: 24px;">
+    </a>
+    <div class="fs-5 fw-light">Your Shopping Cart</div>
   </div>
+  
+  
+  
 
   <!-- 🧾 Cart Body -->
   <div class="container-fluid cart-body">

@@ -96,11 +96,11 @@ products = [
     "image": "https://st.bigc-cs.com/cdn-cgi/image/format=webp,quality=85/public/media/catalog/product/44/88/8853815007144/thumbnail/8853815007144.jpg"}
 ]
 
-target_lenge = 33
-products_card = products.copy()
-for product in products_card:
-    if len(product["name"]) > target_lenge:
-        product["name"] = product["name"][:target_lenge-3] + "..."
+# target_lenge = 33
+# products_card = products.copy()
+# for product in products_card:
+#     if len(product["name"]) > target_lenge:
+#         product["name"] = product["name"][:target_lenge-3] + "..."
 
 def get_cart_count():
     return sum(session.get('cart', {}).values())
@@ -108,7 +108,7 @@ def get_cart_count():
 @app.route('/')
 def index():
     cart_count = get_cart_count()
-    return render_template('index.html', products=products_card, cart_count=cart_count)
+    return render_template('index.html', products=products, cart_count=cart_count)
 
 @app.route('/cart')
 def cart():
@@ -173,6 +173,6 @@ def confirm_order():
     })
 
 
-# if __name__ == '__main__':
-#     # app.run(debug=True)
-#     app.run(host='0.0.0.0', port=5007, debug=True) #,debug=False)
+if __name__ == '__main__':
+    # app.run(debug=True)
+    app.run(host='0.0.0.0', port=5007, debug=True) #,debug=False)
