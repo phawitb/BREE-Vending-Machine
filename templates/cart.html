@@ -15,9 +15,37 @@
       background-color: #f8f9fa;
     }
 
-    .full-screen-container {
-      padding: 0;
-      margin: 0;
+    /* Modern, minimal sticky header */
+    .cart-title-fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: #f8f9fa;
+      z-index: 1000;
+      padding: 0.8rem 1.2rem;
+      border-bottom: 1px solid #dee2e6;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-back {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: #333;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .btn-back:hover {
+      color: #0d6efd;
+    }
+
+    .cart-body {
+      padding-top: 80px;
     }
 
     .qr-section {
@@ -27,7 +55,7 @@
 
     @media (max-width: 576px) {
       h1 {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
       }
 
       .btn {
@@ -48,9 +76,14 @@
 </head>
 <body class="bg-light">
 
-  <div class="container-fluid full-screen-container">
-    <h1 class="mb-3 px-2 pt-3">🛒 Your Shopping Cart</h1>
+  <!-- ✅ Minimal Fixed Header -->
+  <div class="cart-title-fixed">
+    <a href="{{ url_for('index') }}" class="btn-back">←</a>
+    <div class="fs-5 fw-light">Your Shopping Cart</div>
+  </div>
 
+  <!-- 🧾 Cart Body -->
+  <div class="container-fluid cart-body">
     {% if cart_items %}
       <!-- Responsive Cart Table -->
       <div class="table-responsive px-2">
@@ -58,44 +91,36 @@
           <thead class="table-dark">
             <tr>
               <th>Product</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Total</th>
+              <th class="text-center">Price</th>
+              <th class="text-center">Qty.</th>
+              <th class="text-center">Total</th>
             </tr>
           </thead>
           <tbody>
             {% for item in cart_items %}
             <tr>
               <td>{{ item.name }}</td>
-              <td>${{ item.price }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>${{ item.total }}</td>
+              <td class="text-center">{{ item.price }}</td>
+              <td class="text-center">{{ item.quantity }}</td>
+              <td class="text-center">{{ item.total }}</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
 
-      <!-- Buttons + Total -->
-      <div class="row px-2 mt-3 align-items-center">
-        <!-- Left Buttons -->
-        <div class="col-md-6 d-flex gap-2 mb-3 mb-md-0">
-          <a href="{{ url_for('index') }}" class="btn btn-secondary">⬅ Back to Shop</a>
-          <a href="{{ url_for('clear_cart') }}" class="btn btn-danger">🗑️ Clear Cart</a>
-        </div>
-
-        <!-- Right Total -->
-        <div class="col-md-6 text-md-end">
-          <h4>Total: ${{ total }}</h4>
-        </div>
+      <!-- ✅ Clear Cart & Total in Same Row -->
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 px-2 mt-0">
+        <a href="{{ url_for('clear_cart') }}" class="btn btn-danger">Clear Cart</a>
+        <h4 class="mb-0 ms-auto">Total: ฿{{ total }}</h4>
       </div>
 
       <!-- Confirm Button -->
-      <div class="mt-4 px-2">
-        <button class="btn btn-success btn-lg w-100" id="confirmBtn">✅ Confirm Order</button>
+      <div class="mt-2 px-2">
+        <button class="btn btn-success btn-lg w-100" id="confirmBtn">Confirm Order</button>
       </div>
 
-      <!-- QR Payment Section -->
+      <!-- QR Code -->
       <div id="qrSection" class="qr-section text-center px-2">
         <h5 class="mt-4">📱 Scan to Pay</h5>
         <img id="qrImage" src="" alt="QR Code for Payment" class="img-fluid" style="max-width: 300px;">
@@ -103,8 +128,7 @@
       </div>
 
     {% else %}
-      <p class="text-muted px-2">Your cart is empty.</p>
-      <a href="{{ url_for('index') }}" class="btn btn-primary mt-3 px-2">⬅ Back to Shop</a>
+      <p class="text-muted px-2 mt-5">Your cart is empty.</p>
     {% endif %}
   </div>
 
@@ -132,12 +156,12 @@
           } else {
             alert(data.message || "Order failed.");
             confirmBtn.disabled = false;
-            confirmBtn.textContent = "✅ Confirm Order";
+            confirmBtn.textContent = "Confirm Order";
           }
         } catch (err) {
           alert("Server error.");
           confirmBtn.disabled = false;
-          confirmBtn.textContent = "✅ Confirm Order";
+          confirmBtn.textContent = "Confirm Order";
         }
       });
     }
