@@ -15,7 +15,6 @@
       background-color: #f8f9fa;
     }
 
-    /* Modern, minimal sticky header */
     .cart-title-fixed {
       position: fixed;
       top: 0;
@@ -76,25 +75,18 @@
 </head>
 <body class="bg-light">
 
-  <!-- ✅ Minimal Fixed Header -->
-  <!-- <div class="cart-title-fixed">
-    <a href="{{ url_for('index') }}" class="btn-back">←</a>
-    <div class="fs-5 fw-light">Your Shopping Cart</div>
-  </div> -->
+  <!-- Fixed Header -->
   <div class="cart-title-fixed d-flex align-items-center ps-3 gap-2">
     <a href="{{ url_for('index') }}" class="d-flex align-items-center">
       <img src="{{ url_for('static', filename='img/BackArrowIcon.png') }}" alt="Back" style="height: 24px;">
     </a>
     <div class="fs-5 fw-light">Your Shopping Cart</div>
   </div>
-  
-  
-  
 
-  <!-- 🧾 Cart Body -->
+  <!-- Cart Body -->
   <div class="container-fluid cart-body">
     {% if cart_items %}
-      <!-- Responsive Cart Table -->
+      <!-- Table -->
       <div class="table-responsive px-2">
         <table class="table table-bordered table-striped">
           <thead class="table-dark">
@@ -109,19 +101,19 @@
             {% for item in cart_items %}
             <tr>
               <td>{{ item.name }}</td>
-              <td class="text-center">{{ item.price }}</td>
-              <td class="text-center">{{ item.quantity }}</td>
-              <td class="text-center">{{ item.total }}</td>
+              <td class="text-center">฿{{ item.price|int }}</td>
+              <td class="text-center">{{ item.quantity|int }}</td>
+              <td class="text-center">฿{{ item.total|int }}</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
 
-      <!-- ✅ Clear Cart & Total in Same Row -->
+      <!-- Total & Clear Button -->
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 px-2 mt-0">
         <a href="{{ url_for('clear_cart') }}" class="btn btn-danger">Clear Cart</a>
-        <h4 class="mb-0 ms-auto">Total: ฿{{ total }}</h4>
+        <h4 class="mb-0 ms-auto text-danger">Total: ฿{{ total|int }}</h4>
       </div>
 
       <!-- Confirm Button -->
@@ -129,7 +121,7 @@
         <button class="btn btn-success btn-lg w-100" id="confirmBtn">Confirm Order</button>
       </div>
 
-      <!-- QR Code -->
+      <!-- QR Section -->
       <div id="qrSection" class="qr-section text-center px-2">
         <h5 class="mt-4">📱 Scan to Pay</h5>
         <img id="qrImage" src="" alt="QR Code for Payment" class="img-fluid" style="max-width: 300px;">
